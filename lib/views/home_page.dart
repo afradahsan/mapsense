@@ -1,44 +1,34 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:mapsense/view_models/location_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  final Completer<GoogleMapController> _controller =
-      Completer<GoogleMapController>();
+class HomePageState extends State<HomePage> {
 
-  static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
+  void onFabPressed(){
+    Provider.of<LocationViewModel>(context, listen: false).getCurrentLocation();
+  }
 
-  static const CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
   @override
   Widget build(BuildContext context) {
+    final locationVM = Provider.of<LocationViewModel>(context);
     return Scaffold(
       body: GoogleMap(
-        mapType: MapType.satellite,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
-        label: const Text('To the lake!'),
-        icon: const Icon(Icons.directions_boat),
-      ),
+          markers: locationVM.markers,
+          polylines: locationVM.polylines,
+          mapType: MapType.normal,
+          initialCameraPosition: const CameraPosition(
+            target: LatLng(37.42796133580664, -122.085749655962),
+            zoom: 14.4746,
+          ),
+          onMapCreated: locationVM.onMapCreated),
     );
   }
 }

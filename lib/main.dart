@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mapsense/views/home_page.dart';
+import 'package:mapsense/services/db_services.dart';
+import 'package:mapsense/views/bottom_nav.dart';
+import 'package:provider/provider.dart';
+import 'view_models/location_viewmodel.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await DatabaseService().initDatabase();
   runApp(const MyApp());
 }
 
@@ -10,9 +15,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Map Sense',
-      home: HomePage()
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LocationViewModel())
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Map Sense',
+        home: BottomNav()
+      ),
     );
   }
 }
