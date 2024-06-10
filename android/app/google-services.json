@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "353738545172",
+    "project_id": "mapsense-7295f",
+    "storage_bucket": "mapsense-7295f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:353738545172:android:7945c389bef352cc362f01",
+        "android_client_info": {
+          "package_name": "com.example.mapsense"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNtnkoP_7ZSAFeZqg5Vi1f9mDnd--qQZk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
