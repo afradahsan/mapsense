@@ -5,7 +5,6 @@ class DatabaseService {
   static Database? _database;
 
   Future<Database> get database async {
-    print('no hello');
     if (_database != null) return _database!;
     _database = await initDatabase();
     return _database!;
@@ -13,7 +12,6 @@ class DatabaseService {
 
 
   Future<Database?> initDatabase() async {
-    print('hello db');
     _database = await openDatabase(
       'location.db',
       version: 1,

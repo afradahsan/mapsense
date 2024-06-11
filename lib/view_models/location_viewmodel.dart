@@ -1,13 +1,18 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mapsense/models/location_model.dart';
 import 'package:mapsense/services/db_services.dart';
 import 'package:mapsense/services/location_services.dart';
+import 'package:mapsense/views/widgets/snackbar.dart';
 
 class LocationViewModel extends ChangeNotifier {
   final DatabaseService _databaseService = DatabaseService();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  User? currentUser;
 
   Position? yourLocation;
   Set<Marker> markers = {};
@@ -17,10 +22,12 @@ class LocationViewModel extends ChangeNotifier {
   final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
 
   void onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
+    if (!_controller.isCompleted) {
+      _controller.complete(controller);
+    }
   }
 
-  Future<void> getCurrentLocation() async {
+  Future<void> getCurrentLocation(BuildContext context) async {
     try {
       yourLocation = await LocationServices.determinePosition();
       final position = yourLocation!;
@@ -38,7 +45,7 @@ class LocationViewModel extends ChangeNotifier {
       ));
 
       polylines.add(Polyline(
-        polylineId: PolylineId('path'),
+        polylineId: const PolylineId('path'),
         points: pathList,
         color: Colors.black,
         width: 5,
@@ -52,9 +59,17 @@ class LocationViewModel extends ChangeNotifier {
         latitude: position.latitude,
         longitude: position.longitude,
       ));
+
+      await _firestore.collection('locations').add({
+        'latitude': position.latitude,
+        'longitude': position.longitude,
+        'user_id': currentUser?.uid ?? 'unknown_user',
+      });
       debugPrint('Location inserted into DB');
     } catch (e) {
+      showSnackbar(context, 'Error Fetching Location');
       debugPrint('Error getting current location: $e');
+      
     }
   }
 
@@ -74,5 +89,10 @@ class LocationViewModel extends ChangeNotifier {
 
   Future<List<LocationModel>> getLocationsFromDatabase() async {
     return _databaseService.getLocations();
+  }
+
+  void setCurrentUser(User? user) {
+    currentUser = user;
+    notifyListeners();
   }
 }

@@ -12,7 +12,6 @@ class LocationServices {
       if (permission == LocationPermission.denied) {
         return Future.error('Location services are disabled.');
       }
-      ;
     }
 
     permission = await Geolocator.checkPermission();

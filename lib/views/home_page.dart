@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mapsense/view_models/location_viewmodel.dart';
@@ -13,11 +14,13 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
 
   void onFabPressed(){
-    Provider.of<LocationViewModel>(context, listen: false).getCurrentLocation();
+    Provider.of<LocationViewModel>(context, listen: false).getCurrentLocation(context);
   }
+  User? currentUser = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
+    
     final locationVM = Provider.of<LocationViewModel>(context);
     return Scaffold(
       body: GoogleMap(
